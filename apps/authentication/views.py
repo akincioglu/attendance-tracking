@@ -96,7 +96,7 @@ class EmployeeLoginView(APIView):
         serializer = UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
-        if not user.role != "employee":
+        if not user.role == "employee":
             raise AuthenticationFailed("Only employees can login here.")
         refresh = RefreshToken.for_user(user)
         return Response(
@@ -117,7 +117,7 @@ class AdminLogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        if not request.user.is_admin:
+        if not request.user.role == "admin":
             raise AuthenticationFailed("Only admins can logout here.")
         try:
             refresh_token = request.data["refresh"]
@@ -142,7 +142,7 @@ class EmployeeLogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        if not request.user.is_employee:
+        if not request.user.role == "employee":
             raise AuthenticationFailed("Only employees can logout here.")
         try:
             refresh_token = request.data["refresh"]
