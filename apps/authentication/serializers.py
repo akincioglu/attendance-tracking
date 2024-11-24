@@ -5,10 +5,11 @@ from apps.users.models import User
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    role = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ["username", "email", "password", "first_name", "last_name"]
+        fields = ["username", "email", "password", "first_name", "last_name", "role"]
 
     def create(self, validated_data):
         user = User.objects.create_user(
@@ -17,6 +18,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             password=validated_data["password"],
             first_name=validated_data["first_name"],
             last_name=validated_data["last_name"],
+            role=validated_data["role"],
         )
         return user
 
@@ -37,13 +39,4 @@ class UserLoginSerializer(serializers.Serializer):
         if not user.check_password(password):
             raise serializers.ValidationError("Incorrect password.")
 
-        # Create JWT tokens
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
-
-        return {
-            "refresh_token": str(refresh),
-            "access_token": access_token,
-            "user_id": user.id,
-            "role": user.role,  # Role can be used later to differentiate between admin and employee
-        }
+        return user

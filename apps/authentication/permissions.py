@@ -3,11 +3,17 @@ from rest_framework.permissions import BasePermission
 
 class IsAdmin(BasePermission):
     """
-    Permission for admins.
+    Custom permission to only allow access to admins.
     """
 
     def has_permission(self, request, view):
-        return request.user and request.user.is_admin
+        if not request.user.is_authenticated:
+            return False
+
+        if not request.user.role == "admin":
+            return False
+
+        return request.user
 
 
 class IsEmployee(BasePermission):
@@ -16,4 +22,10 @@ class IsEmployee(BasePermission):
     """
 
     def has_permission(self, request, view):
-        return request.user and request.user.is_employee
+        if not request.user.is_authenticated:
+            return False
+
+        if not request.user.role == "employee":
+            return False
+
+        return request.user

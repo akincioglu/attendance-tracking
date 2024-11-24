@@ -1,10 +1,18 @@
 from rest_framework import viewsets
-from django.contrib.auth import get_user_model
 from .serializers import UserSerializer
-from rest_framework.permissions import IsAuthenticated
+from apps.users.models import User
+from apps.authentication.permissions import IsAdmin
+from apps.authentication.authentication import CustomJWTAuthentication
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = get_user_model().objects.all()
+    """ViewSet for managing users with admin permissions."""
+
+    authentication_classes = [CustomJWTAuthentication]
+    queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
+
+    def list(self, request, *args, **kwargs):
+        print(request.user)
+        return super().list(request, *args, **kwargs)
