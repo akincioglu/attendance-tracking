@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Django servisi
+  web:
+    build: .
+    command: ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000"]
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DEBUG=True
+      - DJANGO_DB_HOST=db
+      - DJANGO_DB_PORT=5432
+      - DJANGO_DB_NAME=attendance_tracking_db
+      - DJANGO_DB_USER=postgres
+      - DJANGO_DB_PASSWORD=postgres
+
+  # PostgreSQL servisi
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=attendance_tracking_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+# Veritabanı verisi için bir volume tanımlıyoruz
+volumes:
+  postgres_data:

@@ -6,9 +6,9 @@ ALLOWED_HOSTS = []
 
 DATABASES['default'] = {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'attendance_db_dev',
+    'NAME': 'attendance_tracking_db',
     'USER': 'postgres',
-    'PASSWORD': 'dev_password',
-    'HOST': 'localhost',
+    'PASSWORD': 'postgres',
+    'HOST': 'db',
     'PORT': '5432',
 }
